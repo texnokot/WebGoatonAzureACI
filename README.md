@@ -92,4 +92,7 @@ Go to `Pipelines` and check that pipeline has been automatically created. The fi
 
 Authorize and Run pipeline. It will take some time for Maven task, but after it should create and deploy container to ACR and publish it to ACI. 
 
-Enjoy learning security issues with WebGoat solution.
+![](https://githubpictures.blob.core.windows.net/webgoataci/build.png)
+
+
+**Enjoy learning security issues with WebGoat solution.**
