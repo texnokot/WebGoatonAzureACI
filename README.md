@@ -13,7 +13,7 @@ This guide shows how to run WebGoat 8 container version on Azure Container Insta
 * **Azure DevOps account**. To create account follow [here](https://azure.microsoft.com/en-in/services/devops/pipelines/)
 * **Github account**. To join Github go [here](https://github.com/join) 
 
-## Create Azure DevOps project
+## Create Azure DevOps project and prepare WebGoat source code
 
 In Azure DevOps create the new project *WebGoat*
 
@@ -32,5 +32,29 @@ Enable `Multi-stage pipelines` in Preview feautures by clicking on Azure DevOps 
 
 This is important as Pipeline will be based fully on yml syntax for both: Build and Release pipelines.
 
+## Create Azure container registry and Azure Key Vault
+
+Create an Azure container registry (ACR) to store WebGoat docker containers using Azure CLI. More information about ACR is [here](https://docs.microsoft.com/en-us/azure/container-registry/)
+
+Create Resource Group where all resources, including ACR will be located:
+`az group create --name webGoatRG --location westeurope`
+
+Create a container registry with admin user enabled:
+`az acr create --resource-group webGoatRG --name acrWebGoat --sku Basic --admin-enabled true --location westeurope`
+
+Create a Key Vault for storing sensitive keys and passwords like ACR username and password.
+`az keyvault create --name "webGoatKV" --resource-group "webGoatRG" --location westeurope`
+
+## Configure CI/CD pipeline for Webgoat
+
+Download `azure-pipelines.yml` from this repository: https://github.com/texnokot/WebGoatonAzureACI and upload it to the root directory of Azure Repos repository.
+![](https://githubpictures.blob.core.windows.net/webgoataci/CommitPipeline.png)
+
+The pipeline contains two stages:
+
+* **Build** - builds and pushes WebGoat container to the ACR
+* **DeployToDev** - deploys pushed container from ACR to ACI. The first time running also creates ACI
 
 
+
+  

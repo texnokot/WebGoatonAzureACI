@@ -20,6 +20,8 @@ variables:
     value: <RESOURCE_GROUP_NAME>
   - name: acrRegistry
     value: <ACR_ADDRESS>
+  - name: subscriptionConnection
+    value: <SUBCRIPTION_CONNECTION_NAME>
 
 # build steps to build and push WebGoat container to ACR
 stages:
@@ -73,6 +75,6 @@ stages:
             - task: AzureCLI@1
               displayName: Deploy to WebGoat container Dev ACI
               inputs:
-                azureSubscription: 'DevSecOpsDemoSC'
+                azureSubscription: $(subscriptionConnection)
                 scriptLocation: 'inlineScript'
                 inlineScript: 'az container create --resource-group $(resourceGroup) --name webgoatdemo --image $(acrRegistry)/$(imageRepository):$(tag) --dns-name-label ndcwebgoat --ports 8080 --registry-username $(acrUsername) --registry-password $(acrPassword)'
