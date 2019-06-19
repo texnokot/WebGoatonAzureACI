@@ -11,7 +11,7 @@ variables:
   - name: dockerRegistryServiceConnection
     value: <ACR_CONNECTION_NAME>
   - name: imageRepository
-    value: 'webgoat/webgoat-8.0'
+    value: 'webgoat-8.0'
   - name: dockerfilePath
     value: 'webgoat-server/Dockerfile'
   - name: tag
@@ -22,6 +22,10 @@ variables:
     value: <ACR_ADDRESS>
   - name: subscriptionConnection
     value: <SUBCRIPTION_CONNECTION_NAME>
+  - name: containerGroup
+    value: <CONTAINER GROUP>
+  - name: containerDNS
+    value: <CONTAINER DNS LABEL>
 
 # build steps to build and push WebGoat container to ACR
 stages:

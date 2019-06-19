@@ -45,6 +45,10 @@ Create a container registry with admin user enabled:
 Create a Key Vault for storing sensitive keys and passwords like ACR username and password.
 `az keyvault create --name "webGoatKV" --resource-group "webGoatRG" --location westeurope`
 
+Open Key Vault and add ACR username and password as values:
+* acrUsername - get ACR username from Access Keys tab in Azure portal
+* acrPassword - get ACR password from Access Keys tab in Azure portal
+
 ## Configure CI/CD pipeline for Webgoat
 
 Download `azure-pipelines.yml` from this repository: https://github.com/texnokot/WebGoatonAzureACI and upload it to the root directory of Azure Repos repository.
@@ -55,6 +59,39 @@ The pipeline contains two stages:
 * **Build** - builds and pushes WebGoat container to the ACR
 * **DeployToDev** - deploys pushed container from ACR to ACI. The first time running also creates ACI
 
+CI/CD pipeline requires an access to ACR to be able to push containers and an access to Resource Group at least to create ACI. To allow this create 2 service connections.
 
+Create Service connection for ACR by going `Project settings` and under Pipelines choose `Service connections` and `New service connection`. Choose `Docker Registry` and fill required lines under `Azure Container Registry`
 
+![](https://githubpictures.blob.core.windows.net/webgoataci/acrConnection.png)
+
+Create Service connection for subscription by choosing `Azure Resource Manager` service connection. Choose proper subscription and resource group.
+
+![](https://githubpictures.blob.core.windows.net/webgoataci/subscConnection.png)
+
+Open `azure-pipelines.yml` and replace variables with proper values:
+
+* **dockerRegistryServiceConnection** - Connection name for ACR
+* **resourceGroup** - Azure Resource Group where resources are located
+* **acrRegistry** - FQDN name for ACR Registry (for example: acrwebgoat.azurecr.io)
+* **subscriptionConnection** - Connection name for Azure subscription
+* **containerGroup** - Container group name
+* **containerDNS** - Contaner DNS label shall be unique
   
+Add created Key Vault to Azure DevOps Project by creating new Variable group `acrDetails` under `Pipelines -> Library`.
+
+Link to Key Vault and add required variables.
+
+![](https://githubpictures.blob.core.windows.net/webgoataci/linkAKV.png)
+
+![](https://githubpictures.blob.core.windows.net/webgoataci/getAKV.png)
+
+Go to `Pipelines` and check that pipeline has been automatically created. The first time it can fail and require manual authorization.
+
+![](https://githubpictures.blob.core.windows.net/webgoataci/authorize.png)
+
+Authorize and Run pipeline. It will take some time for Maven task, but after it should create and deploy container to ACR and publish it to ACI. 
+
+Enjoy learning security issues with WebGoat solution.
+
+ERROR: The DNS name label 'ndcwebgoat' in container group 'webgoatdemo' not available. Try using a different label.
