@@ -59,6 +59,7 @@ stages:
         containerRegistry: $(dockerRegistryServiceConnection)
         tags: |
           $(tag)
+          latest
 
 # deploying to development stage
 - stage: DeployToDev
